@@ -3,6 +3,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FaSignInAlt } from "react-icons/fa";
 
+const API_URL = "http://localhost:8080/api/signin";
+
 const Signin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -10,23 +12,23 @@ const Signin = () => {
 
   const handleSignin = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post("http://localhost:8080/api/signin", {
-        email,
-        password,
-      });
-      console.log(response);
-      if (response.status === 200) {
-        alert("Signin successful");
-        //Store token in localStorage
-        localStorage.setItem("auth_token", response.data.token);
 
-        //Redirect to the homepage after successful login
+    try {
+      const { data, status } = await axios.post(API_URL, { email, password });
+
+      if (status === 200) {
+        // Store token and user in localStorage
+        const { token, user } = data;
+        localStorage.setItem("auth_token", token);
+        localStorage.setItem("user", JSON.stringify(user));
+
+        // Redirect after successful signin
+        alert("Signin successful");
         navigate("/");
       }
     } catch (error) {
       console.error("Signin error", error);
-      alert("Signin failed");
+      alert("Signin failed. Please check your credentials.");
     }
   };
 
@@ -37,6 +39,7 @@ const Signin = () => {
         className="w-full max-w-sm bg-white p-6 rounded-lg shadow-lg"
       >
         <h2 className="text-2xl font-semibold mb-6 text-center">Sign In</h2>
+
         <div className="mb-4">
           <label
             htmlFor="email"
@@ -53,6 +56,7 @@ const Signin = () => {
             required
           />
         </div>
+
         <div className="mb-4">
           <label
             htmlFor="password"
@@ -69,6 +73,7 @@ const Signin = () => {
             required
           />
         </div>
+
         <button
           type="submit"
           className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg flex items-center justify-center hover:bg-blue-600"
