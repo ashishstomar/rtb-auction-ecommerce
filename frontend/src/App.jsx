@@ -1,5 +1,13 @@
+import Header from "./components/Header";
+import Body from "./components/Body";
+
 const App = () => {
-  return <div className="bg-slate-600 text-4xl">App</div>;
+  return (
+    <div>
+      <Header />
+      <Body />
+    </div>
+  );
 };
 
 export default App;
