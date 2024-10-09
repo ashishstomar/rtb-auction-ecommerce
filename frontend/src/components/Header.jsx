@@ -1,21 +1,30 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom"; // Using react-router-dom's Link for navigation
+import { Link, useNavigate } from "react-router-dom";
 import {
   FaBars,
   FaGavel,
   FaLinkedin,
   FaGithub,
   FaTwitter,
-} from "react-icons/fa"; // Import React Icons
+} from "react-icons/fa";
 
 const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // For handling mobile menu state
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  // Retrieve user information from localStorage
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const handleLogout = () => {
+    localStorage.removeItem("auth_token");
+    localStorage.removeItem("user");
+    navigate("/");
+  };
 
   return (
     <header className="bg-indigo-600 text-white shadow-lg">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between py-5">
-          {/* Logo */}
           <div>
             <Link
               to="/home"
@@ -26,7 +35,6 @@ const Header = () => {
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-6">
             <Link to="/" className="hover:text-indigo-200">
               Home
@@ -42,7 +50,26 @@ const Header = () => {
             </Link>
           </nav>
 
-          {/* Social Icons */}
+          <div className="hidden md:flex space-x-6 items-center">
+            {user ? (
+              <>
+                <span className="text-white">
+                  Hi, {user.fullName || "User"}!
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="bg-red-500 px-3 py-1 rounded-md text-white"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link to="/signin" className="bg-blue-500 px-3 py-1 rounded-md">
+                Login
+              </Link>
+            )}
+          </div>
+
           <div className="hidden md:flex space-x-6">
             <a
               href="https://linkedin.com"
@@ -93,6 +120,25 @@ const Header = () => {
             <Link to="/contact" className="block hover:text-indigo-200">
               Contact
             </Link>
+
+            {user ? (
+              <>
+                <span>Welcome, {user.fullName || "User"}!</span>
+                <button
+                  onClick={handleLogout}
+                  className="bg-red-500 w-full py-2 rounded-md"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link
+                to="/signin"
+                className="block bg-blue-500 w-full py-2 rounded-md text-center"
+              >
+                Login
+              </Link>
+            )}
           </div>
         )}
       </div>
