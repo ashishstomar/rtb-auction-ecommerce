@@ -8,11 +8,17 @@ async function handleUserSignin(req, res) {
   try {
     const user = await User.find({ email: email });
     console.log(user);
-    const token = createUserToken({ id: user?.id, email: user?.email });
 
     if (user && (await bcrypt.compare(password, user[0]?.password))) {
+      const { password, ...userData } = user[0].toObject(); // Exclude password field
+
+      // Create a token
+      const token = createUserToken({
+        id: userData._id,
+        email: userData.email,
+      });
       res.json({
-        user: user,
+        user: userData,
         token: token,
       });
     } else {
