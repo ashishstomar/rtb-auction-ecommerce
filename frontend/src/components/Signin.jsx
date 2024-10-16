@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FaSignInAlt } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const API_URL = "http://localhost:8080/api/signin";
 
@@ -17,18 +18,20 @@ const Signin = () => {
       const { data, status } = await axios.post(API_URL, { email, password });
 
       if (status === 200) {
-        // Store token and user in localStorage
         const { token, user } = data;
         localStorage.setItem("auth_token", token);
         localStorage.setItem("user", JSON.stringify(user));
 
-        // Redirect after successful signin
         alert("Signin successful");
         navigate("/");
       }
     } catch (error) {
       console.error("Signin error", error);
-      alert("Signin failed. Please check your credentials.");
+      if (error.response && error.response.data) {
+        alert(`Signin failed: ${error.response.data.error}`);
+      } else {
+        alert("Signin failed. Please check your credentials.");
+      }
     }
   };
 
@@ -81,6 +84,16 @@ const Signin = () => {
           <FaSignInAlt className="mr-2" />
           Sign In
         </button>
+
+        <p className="mt-4 text-center text-sm text-gray-600">
+          Don't have an account?{" "}
+          <Link
+            to="/signup"
+            className="text-blue-500 hover:text-blue-700 font-medium"
+          >
+            Register
+          </Link>
+        </p>
       </form>
     </div>
   );
