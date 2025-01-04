@@ -3,8 +3,10 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FaSignInAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const API_URL = "http://localhost:8080/api/signin";
+const API_URL = "http://localhost:8080/api/user/signin";
 
 const Signin = () => {
   const [email, setEmail] = useState("");
@@ -22,21 +24,29 @@ const Signin = () => {
         localStorage.setItem("auth_token", token);
         localStorage.setItem("user", JSON.stringify(user));
 
-        alert("Signin successful");
+        toast.success("Signin successful");
         navigate("/");
       }
     } catch (error) {
       console.error("Signin error", error);
       if (error.response && error.response.data) {
-        alert(`Signin failed: ${error.response.data.error}`);
+        toast.error(`Signin failed: ${error.response.data.error}`);
       } else {
-        alert("Signin failed. Please check your credentials.");
+        toast.error("Signin failed. Please check your credentials.");
       }
     }
   };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={true}
+        newestOnTop={true}
+        closeOnClick
+        pauseOnFocusLoss={false}
+      />
       <form
         onSubmit={handleSignin}
         className="w-full max-w-sm bg-white p-6 rounded-lg shadow-lg"
