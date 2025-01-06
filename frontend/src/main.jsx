@@ -5,19 +5,33 @@ import App from "./App";
 import Signup from "./components/Signup";
 import Signin from "./components/Signin";
 import "./index.css";
+import Auction from "./components/Auction";
+import Body from "./components/Body";
+import ProductPage from "./components/ProductPage";
+// import { SocketContextProvider } from "./context/SocketContext";
 
 const appRouter = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-  },
-  {
-    path: "/signin",
-    element: <Signin />,
-  },
-  {
-    path: "/signup",
-    element: <Signup />,
+    children: [
+      {
+        index: true,
+        element: <Body />,
+      },
+      {
+        path: "/signin",
+        element: <Signin />,
+      },
+      {
+        path: "/signup",
+        element: <Signup />,
+      },
+      {
+        path: "/product/:productId",
+        element: <ProductPage />,
+      },
+    ],
   },
 ]);
 
